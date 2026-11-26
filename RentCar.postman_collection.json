@@ -1,0 +1,342 @@
+{
+  "info": {
+    "name": "RentCar Solutions - API REST",
+    "description": "Colección de pruebas funcionales de RentCar Solutions. Ejecutar con el servidor activo en localhost:3000. Para reproducir los identificadores desde 1, reiniciar el servidor antes de ejecutar la colección completa. Las solicitudes se almacenan en memoria.",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+  },
+  "item": [
+    {
+      "name": "01 - Consultar todas las solicitudes",
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "type": "text/javascript",
+            "exec": [
+              "pm.test(\"Código HTTP 200\", function () {",
+              "    pm.response.to.have.status(200);",
+              "});",
+              "",
+              "pm.test(\"Respuesta es un arreglo\", function () {",
+              "    pm.expect(pm.response.json()).to.be.an(\"array\");",
+              "});"
+            ]
+          }
+        }
+      ],
+      "request": {
+        "method": "GET",
+        "header": [],
+        "url": {
+          "raw": "http://localhost:3000/api/turnos",
+          "protocol": "http",
+          "host": [
+            "localhost"
+          ],
+          "port": "3000",
+          "path": [
+            "api",
+            "turnos"
+          ]
+        },
+        "description": "Consulta todos los registros almacenados en memoria."
+      },
+      "response": []
+    },
+    {
+      "name": "02 - Crear solicitud prioritaria",
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "type": "text/javascript",
+            "exec": [
+              "pm.test(\"Código HTTP 201\", function () {",
+              "    pm.response.to.have.status(201);",
+              "});",
+              "",
+              "pm.test(\"Regla de negocio correcta\", function () {",
+              "    const datos = pm.response.json();",
+              "    pm.expect(datos.prioritario).to.eql(true);",
+              "    pm.expect(datos.recargo).to.eql(12000);",
+              "    pm.expect(datos.totalPagar).to.eql(162000);",
+              "});"
+            ]
+          }
+        }
+      ],
+      "request": {
+        "method": "POST",
+        "header": [
+          {
+            "key": "Content-Type",
+            "value": "application/json"
+          }
+        ],
+        "body": {
+          "mode": "raw",
+          "raw": "{\n    \"cliente\": \"Juan Perez\",\n    \"vehiculo\": \"Toyota Corolla\",\n    \"fecha\": \"2026-12-05\",\n    \"precioBase\": 150000,\n    \"prioritario\": true\n}",
+          "options": {
+            "raw": {
+              "language": "json"
+            }
+          }
+        },
+        "url": {
+          "raw": "http://localhost:3000/api/turnos",
+          "protocol": "http",
+          "host": [
+            "localhost"
+          ],
+          "port": "3000",
+          "path": [
+            "api",
+            "turnos"
+          ]
+        },
+        "description": "Registra una solicitud prioritaria y verifica el recargo del 8 %."
+      },
+      "response": []
+    },
+    {
+      "name": "03 - Crear solicitud sin prioridad",
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "type": "text/javascript",
+            "exec": [
+              "pm.test(\"Código HTTP 201\", function () {",
+              "    pm.response.to.have.status(201);",
+              "});",
+              "",
+              "pm.test(\"Regla de negocio correcta\", function () {",
+              "    const datos = pm.response.json();",
+              "    pm.expect(datos.prioritario).to.eql(false);",
+              "    pm.expect(datos.recargo).to.eql(0);",
+              "    pm.expect(datos.totalPagar).to.eql(120000);",
+              "});"
+            ]
+          }
+        }
+      ],
+      "request": {
+        "method": "POST",
+        "header": [
+          {
+            "key": "Content-Type",
+            "value": "application/json"
+          }
+        ],
+        "body": {
+          "mode": "raw",
+          "raw": "{\n    \"cliente\": \"Maria Lopez\",\n    \"vehiculo\": \"Renault Logan\",\n    \"fecha\": \"2026-12-06\",\n    \"precioBase\": 120000,\n    \"prioritario\": false\n}",
+          "options": {
+            "raw": {
+              "language": "json"
+            }
+          }
+        },
+        "url": {
+          "raw": "http://localhost:3000/api/turnos",
+          "protocol": "http",
+          "host": [
+            "localhost"
+          ],
+          "port": "3000",
+          "path": [
+            "api",
+            "turnos"
+          ]
+        },
+        "description": "Registra una solicitud no prioritaria sin recargo."
+      },
+      "response": []
+    },
+    {
+      "name": "04 - Consultar solicitud por ID",
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "type": "text/javascript",
+            "exec": [
+              "pm.test(\"Código HTTP 200\", function () {",
+              "    pm.response.to.have.status(200);",
+              "});",
+              "",
+              "pm.test(\"Identificador consultado correcto\", function () {",
+              "    pm.expect(pm.response.json().id).to.eql(1);",
+              "});"
+            ]
+          }
+        }
+      ],
+      "request": {
+        "method": "GET",
+        "header": [],
+        "url": {
+          "raw": "http://localhost:3000/api/turnos/1",
+          "protocol": "http",
+          "host": [
+            "localhost"
+          ],
+          "port": "3000",
+          "path": [
+            "api",
+            "turnos",
+            "1"
+          ]
+        },
+        "description": "Consulta el registro con ID 1; requiere haber creado una solicitud previamente."
+      },
+      "response": []
+    },
+    {
+      "name": "05 - Solicitud no encontrada",
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "type": "text/javascript",
+            "exec": [
+              "pm.test(\"Código HTTP 404\", function () {",
+              "    pm.response.to.have.status(404);",
+              "});",
+              "",
+              "pm.test(\"Mensaje de error correcto\", function () {",
+              "    pm.expect(pm.response.json().mensaje).to.eql(\"Solicitud no encontrada\");",
+              "});"
+            ]
+          }
+        }
+      ],
+      "request": {
+        "method": "GET",
+        "header": [],
+        "url": {
+          "raw": "http://localhost:3000/api/turnos/999",
+          "protocol": "http",
+          "host": [
+            "localhost"
+          ],
+          "port": "3000",
+          "path": [
+            "api",
+            "turnos",
+            "999"
+          ]
+        },
+        "description": "Comprueba la respuesta ante un identificador inexistente."
+      },
+      "response": []
+    },
+    {
+      "name": "06 - Validacion de datos invalidos",
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "type": "text/javascript",
+            "exec": [
+              "pm.test(\"Código HTTP 400\", function () {",
+              "    pm.response.to.have.status(400);",
+              "});",
+              "",
+              "pm.test(\"Mensaje de error correcto\", function () {",
+              "    pm.expect(pm.response.json().mensaje).to.eql(\"Datos obligatorios incompletos o invalidos\");",
+              "});"
+            ]
+          }
+        }
+      ],
+      "request": {
+        "method": "POST",
+        "header": [
+          {
+            "key": "Content-Type",
+            "value": "application/json"
+          }
+        ],
+        "body": {
+          "mode": "raw",
+          "raw": "{\n    \"cliente\": \"Pedro Gomez\",\n    \"vehiculo\": \"Kia Picanto\",\n    \"fecha\": \"2026-12-07\",\n    \"precioBase\": -50000,\n    \"prioritario\": true\n}",
+          "options": {
+            "raw": {
+              "language": "json"
+            }
+          }
+        },
+        "url": {
+          "raw": "http://localhost:3000/api/turnos",
+          "protocol": "http",
+          "host": [
+            "localhost"
+          ],
+          "port": "3000",
+          "path": [
+            "api",
+            "turnos"
+          ]
+        },
+        "description": "Comprueba el rechazo de un precio base negativo."
+      },
+      "response": []
+    },
+    {
+      "name": "07 - Solicitud sin atributo prioritario",
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "type": "text/javascript",
+            "exec": [
+              "pm.test(\"Código HTTP 201\", function () {",
+              "    pm.response.to.have.status(201);",
+              "});",
+              "",
+              "pm.test(\"Regla de negocio correcta\", function () {",
+              "    const datos = pm.response.json();",
+              "    pm.expect(datos.prioritario).to.eql(false);",
+              "    pm.expect(datos.recargo).to.eql(0);",
+              "    pm.expect(datos.totalPagar).to.eql(200000);",
+              "});"
+            ]
+          }
+        }
+      ],
+      "request": {
+        "method": "POST",
+        "header": [
+          {
+            "key": "Content-Type",
+            "value": "application/json"
+          }
+        ],
+        "body": {
+          "mode": "raw",
+          "raw": "{\n    \"cliente\": \"Andres Martinez\",\n    \"vehiculo\": \"Mazda CX-5\",\n    \"fecha\": \"2026-12-08\",\n    \"precioBase\": 200000\n}",
+          "options": {
+            "raw": {
+              "language": "json"
+            }
+          }
+        },
+        "url": {
+          "raw": "http://localhost:3000/api/turnos",
+          "protocol": "http",
+          "host": [
+            "localhost"
+          ],
+          "port": "3000",
+          "path": [
+            "api",
+            "turnos"
+          ]
+        },
+        "description": "Comprueba que omitir la prioridad equivale a false."
+      },
+      "response": []
+    }
+  ]
+}
