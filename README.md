@@ -299,3 +299,9 @@ Resultados obtenidos el 26 de noviembre de 2026:
 Para reproducir las pruebas, se debe reiniciar el
 servidor y ejecutar la colección completa en orden
 mediante Postman Collection Runner.
+
+## 14. Repositorio oficial del proyecto
+
+Código fuente, documentación técnica y pruebas funcionales:
+
+https://github.com/luisgperezv/rentcar-solutions-api
